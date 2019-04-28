@@ -147,6 +147,15 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
     }
 }
 
+// finally方法的回调函数不接受任何参数，这意味着没有办法知道，前面的 Promise 状态到底是fulfilled还是rejected。
+// 这表明，finally方法里面的操作，应该是与状态无关的，不依赖于 Promise 的执行结果。
+Promise.prototype.finally = function (callback) {
+    return this.then(
+        value => Promise.resolve(callback()).then(() => value),
+        reason => Promise.resolve(callback()).then(() => throw reason)
+    )
+}
+
 new Promise(function() {
     resolve(111)
 }).then(function(value) {
